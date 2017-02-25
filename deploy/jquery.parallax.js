@@ -1,44 +1,8 @@
-//============================================================
-//
 // The MIT License
-//
-// Copyright (C) 2014 Matthew Wagerfield - @wagerfield
-//
-// Permission is hereby granted, free of charge, to any
-// person obtaining a copy of this software and associated
-// documentation files (the "Software"), to deal in the
-// Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute,
-// sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice
-// shall be included in all copies or substantial portions
-// of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY
-// OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
-// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-// EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-// FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-// AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-// OR OTHER DEALINGS IN THE SOFTWARE.
-//
-//============================================================
+// @author
+//    Matthew Wagerfield - @wagerfield
+//    TANG Zhixiong - @district10
 
-/**
- * jQuery || Zepto Parallax Plugin
- * @author Matthew Wagerfield - @wagerfield
- * @description Creates a parallax effect between an array of layers,
- *              driving the motion from the gyroscope output of a smartdevice.
- *              If no gyroscope is available, the cursor position is used.
- */
-
-var log = document.getElementById( 'log' );
-log.innerHTML = "在这里打印调试";
 ;(function($, window, document, undefined) {
 
   // Strict Mode
@@ -64,10 +28,9 @@ log.innerHTML = "在这里打印调试";
     precision: 1
   };
 
-  function Plugin(element, options) {
-
-    // DOM Context
-    this.element = element;
+  function Plugin(logElement, options) {
+    var log = logElement;
+    log.innerHTML = "Parallax Logs";
 
     // States
     this.calibrationTimer = null;
@@ -75,18 +38,18 @@ log.innerHTML = "在这里打印调试";
     this.enabled = false;
     this.raf = null;
 
-    // Element Bounds
+    // document.body bounds
     this.bounds = null;
     this.ex = 0;
     this.ey = 0;
     this.ew = 0;
     this.eh = 0;
 
-    // Element Center
+    // element (body) center
     this.ecx = 0;
     this.ecy = 0;
 
-    // Element Range
+    // Body Range
     this.erx = 0;
     this.ery = 0;
 
@@ -117,6 +80,7 @@ log.innerHTML = "在这里打印调试";
     this.initialise();
   }
 
+  // window width/height, center x/y, range x/y
   Plugin.prototype.ww = null;
   Plugin.prototype.wh = null;
   Plugin.prototype.wcx = null;
@@ -216,6 +180,7 @@ log.innerHTML = "在这里打印调试";
     var dx = this.ix - this.cx;
     var dy = this.iy - this.cy;
     if ((Math.abs(dx) > this.calibrationThreshold) || (Math.abs(dy) > this.calibrationThreshold)) {
+      // 重新设置 cx/cy
       this.queueCalibration(0);
     }
     if (this.portrait) {
@@ -235,7 +200,6 @@ log.innerHTML = "在这里打印调试";
     }
     this.vx += (this.mx - this.vx) * this.frictionX;
     this.vy += (this.my - this.vy) * this.frictionY;
-    /*
     log.innerHTML = JSON.stringify({
         "fun": "shit",
         "mx": this.mx,
@@ -245,7 +209,6 @@ log.innerHTML = "在这里打印调试";
         "ix": this.ix,
         "iy": this.iy
     }, null, 4);
-    */
     this.raf = requestAnimationFrame(this.onAnimationFrame);
   };
 
@@ -261,14 +224,14 @@ log.innerHTML = "在这里打印调试";
       var x = (event.beta  || 0) / MAGIC_NUMBER; //  -90 :: 90
       var y = (event.gamma || 0) / MAGIC_NUMBER; // -180 :: 180
 
-      // Detect Orientation Change
+      // Detect Orientation Change, 页面方向变化了，需要重新计算 center x/y，即需要重新 calibrate
       var portrait = window.innerHeight > window.innerWidth;
       if (this.portrait !== portrait) {
         this.portrait = portrait;
         this.calibrationFlag = true;
       }
 
-      // Set Calibration
+      // Set Calibration，设置中心
       if (this.calibrationFlag) {
         this.calibrationFlag = false;
         this.cx = x;
@@ -321,7 +284,7 @@ log.innerHTML = "在这里打印调试";
   }
 
   if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback, element) {
+    window.requestAnimationFrame = function(callback, document.body) {
       var currTime = new Date().getTime();
       var timeToCall = Math.max(0, 16 - (currTime - lastTime));
       var id = window.setTimeout(function() { callback(currTime + timeToCall); },

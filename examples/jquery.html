@@ -31,14 +31,11 @@
 	</style>
 
 </head>
-<body id="scene" class="scene">
+<body>
 
-	<div id="container" class="container">
-		<ul>
-		</ul>
-	</div>
 	<div id="logdiv">
 		<pre><code id="log">
+			...............................
         </code></pre>
 	</div>
 
@@ -47,8 +44,12 @@
 	<script src="../deploy/jquery.parallax.js"></script>
 	<script>
 
+
+    var log = document.getElementById( 'log' );
+    log.innerHTML = "在这里打印调试";
+
 	// Yep, that's it!
-	$('#scene').parallax();
+	$(log).parallax();
 
 	</script>
 
