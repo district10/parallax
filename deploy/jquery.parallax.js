@@ -36,6 +36,9 @@
  *              driving the motion from the gyroscope output of a smartdevice.
  *              If no gyroscope is available, the cursor position is used.
  */
+
+var log = document.getElementById( 'log' );
+log.innerHTML = "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo";
 ;(function($, window, document, undefined) {
 
   // Strict Mode
@@ -277,6 +280,7 @@
     }, this));
   };
 
+  // on window resize
   Plugin.prototype.updateDimensions = function() {
     this.ww = window.innerWidth;
     this.wh = window.innerHeight;
@@ -457,7 +461,9 @@
       var xOffset = this.vx * (depthX * (this.invertX ? -1 : 1));
       var yOffset = this.vy * (depthY * (this.invertY ? -1 : 1));
       this.setPosition(layer, xOffset, yOffset);
+      // shit
     }
+    log.innerHTML = JSON.stringify({"fun": "raf", "vx": this.vx, "vy": this.vy}, null, 4);
     this.raf = requestAnimationFrame(this.onAnimationFrame);
   };
 
@@ -491,6 +497,7 @@
       this.ix = x;
       this.iy = y;
     }
+    // log.innerHTML = JSON.stringify({"fun": "onDeviceOrientation", "x": this.ix, "y": this.iy}, null, 4);
   };
 
   Plugin.prototype.onMouseMove = function(event) {
@@ -520,6 +527,7 @@
       this.ix = (clientX - this.wcx) / this.wrx;
       this.iy = (clientY - this.wcy) / this.wry;
     }
+    // log.innerHTML = JSON.stringify({"fun": "onMouseMove", "x": this.ix, "y": this.iy}, null, 4);
   };
 
   var API = {
